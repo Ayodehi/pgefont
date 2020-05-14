@@ -7,6 +7,8 @@ In this initial release, the code is not in a particularly friendly, optimized,
 or possibly even correct state. However, you are free to do what you will with it
 or use it to figure out how to implement better fonts in your own application.
 
+<img src="example/basic_example.jpg" width="512" />
+
 # Requirements
 
 The font extension uses FreeType 2 to read and process TTF fonts. More information
@@ -21,12 +23,9 @@ Among the planned changes are:
 
 * Currently the font library uses my spritemap library as well. Ideally I'd like
 to remove that dependency.
-* The spritemap generation isn't fully configurable right now. It will default
-to 16x16. There's nothing stopping you from tweaking those values yourself for
-your project needs.
-* The spritemap it generates is a complete map of all glyphs found in the TTF font
-and for simplicity sake is just in one giant long image. This enables trivial
-offsets into the spritemap as `character * sprite.x` but may not be the most
+* The spritemap will generate the first 256 glyphs from the font and for
+simplicity sake is just in one giant long image. This enables trivial offsets
+into the spritemap as `character * sprite_size.x` but may not be the most
 friendly of layouts for other projects. It would be nice to be able to specify
 a stride for the resulting spritemap.
 * There are other partially implemented classes including MonospaceFont which

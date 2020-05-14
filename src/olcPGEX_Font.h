@@ -55,7 +55,7 @@
 	font = new olc::TTFFont("./Assets/Fonts/Roboto-Medium.ttf", 12);
 	font->BuildSprite();
 
-	font->Draw(this, { 16, 16 }, "Hello World");
+	font->DrawString(this, { 16, 16 }, "Hello World");
 	font->DrawFormatString(this, { 16, 32 }, "%s %s", "Hello", "World");
 	font->DrawVerticalString(this, { 16, 48 }, "Hello World");
 	font->DrawVerticalFormatString(this, {32, 48 }, "%s %s", "Hello", "World");
@@ -157,6 +157,17 @@ namespace olc
 			va_end(args);
 
 			DrawVerticalString(pge, pos, std::string_view(buffer), scale, tint);
+		}
+
+		void DrawVerticalFormatString(olc::PixelGameEngine* pge, const olc::vi2d& pos, const std::string message = "", ...) const
+		{
+			char buffer[2048];
+			va_list args;
+			va_start(args, message);
+			vsprintf_s(buffer, 2048, message.c_str(), args);
+			va_end(args);
+
+			DrawVerticalString(pge, pos, std::string_view(buffer), { 1.0f, 1.0f }, olc::WHITE);
 		}
 
 		void DrawFormatString(olc::PixelGameEngine* pge, const olc::vi2d& pos, const std::string message = "", ...) const
@@ -278,8 +289,8 @@ namespace olc
 				return false;
 			}
 
-			widths = std::vector<char>(face->num_glyphs);
-			heights = std::vector<char>(face->num_glyphs);
+			widths = std::vector<char>(256);
+			heights = std::vector<char>(256);
 			
 			sprite = new olc::Sprite(sprite_size.x * 256, sprite_size.y);
 
