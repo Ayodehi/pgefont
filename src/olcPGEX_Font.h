@@ -52,7 +52,7 @@
 	#define OLC_PGEX_FONT
 	#include "olcPGEX_Font.h"
 
-	font = new olc::TTFFont("./Assets/Fonts/Roboto-Medium.ttf");
+	font = new olc::TTFFont("./Assets/Fonts/Roboto-Medium.ttf", 12);
 	font->BuildSprite();
 
 	font->Draw(this, { 16, 16 }, "Hello World");
@@ -132,7 +132,7 @@ namespace olc
 				else
 				{
 					spritemap->Draw(pge, c, pos + spos, scale, tint);
-					spos.y += font_height * scale.y;
+					spos.y += heights[c] * scale.y;
 				}
 			}
 		}
@@ -179,6 +179,7 @@ namespace olc
 		{
 			int lines = 1;
 			int width = 0;
+			int max_height = 0;
 			for (auto& x : message)
 			{
 				if (x == '\n')
@@ -187,9 +188,10 @@ namespace olc
 				}
 
 				width += widths[(size_t)x];
+				max_height = heights[(size_t)x] > max_height ? heights[(size_t)x] : max_height;
 			}
 
-			return { width, spritemap->sprite_size.y * lines };
+			return { width, max_height };
 		}
 
 	protected:
@@ -240,9 +242,11 @@ namespace olc
 	class TTFFont : public Font
 	{
 	public:
-		TTFFont(const std::string& path, int size = 12)
+		TTFFont(const std::string& path, int font_height = 12)
+			: font_path{ path }, font_size{ font_height }
 		{
-			font_path = path;
+			auto tmp = (int)floor(font_height / 0.75);
+			sprite_size = { tmp, tmp };
 		}
 
 		bool BuildSprite()
@@ -265,7 +269,7 @@ namespace olc
 				return false;
 			}
 
-			error = FT_Set_Char_Size(face, 0, size * 64, 0, 0);
+			error = FT_Set_Char_Size(face, 0, font_size * 64, 0, 0);
 			if (error)
 			{
 #ifdef _DEBUG
@@ -276,15 +280,17 @@ namespace olc
 
 			widths = std::vector<char>(face->num_glyphs);
 			heights = std::vector<char>(face->num_glyphs);
-			sprite = new olc::Sprite(16 * face->num_glyphs, 16);
+			
+			sprite = new olc::Sprite(sprite_size.x * 256, sprite_size.y);
+
 			for (int x = 0; x < sprite->width; ++x)
 				for (int y = 0; y < sprite->height; ++y)
-					sprite->SetPixel({ x, y }, olc::Pixel(0, 0, 0, 0));
+					sprite->SetPixel({ x, y }, olc::Pixel(0, 0, 0, 0)); // Set all the pixels transparent
 			
-			for (int c = 0; c < face->num_glyphs; ++c)
+			for (int c = 0; c < 256; ++c)
 			{
 				error = FT_Load_Char(face, (char)c, FT_LOAD_RENDER);
-
+				
 				if (error)
 				{
 #ifdef _DEBUG
@@ -293,27 +299,28 @@ namespace olc
 					continue;
 				}
 
-				FT_GlyphSlot slot = face->glyph;
-
 				widths[c] = face->glyph->metrics.horiAdvance / 64;
 				heights[c] = face->glyph->metrics.vertAdvance / 64;
 
-				int offset = c * 16;
+				int offset = c * sprite_size.x;
 
+				// Draw the glyph into the sprite map
 				for (int row = 0; row < face->glyph->bitmap.rows; ++row)
 				{
 					for (int col = 0; col < face->glyph->bitmap.width; ++col)
 					{
 						int pixel = (int)face->glyph->bitmap.buffer[row * face->glyph->bitmap.width + col];
-						sprite->SetPixel(col + offset + face->glyph->bitmap_left, row + (14 - face->glyph->bitmap_top), olc::Pixel(255, 255, 255, pixel));
+
+						// TODO: Figure out what the correct vertical offset should be dynamically based on font size and sprite size.
+						sprite->SetPixel(offset + face->glyph->bitmap_left + col, sprite_size.y - font_size / 2 - face->glyph->bitmap_top + row, olc::Pixel(255, 255, 255, pixel));
 					}
 				}
 			}
 			
 			decal = new olc::Decal(sprite);
-			spritemap = new olc::SpriteMap(decal, { 16, 16 });
-			font_height = 16;
-			font_width = 16;
+			spritemap = new olc::SpriteMap(decal, sprite_size);
+			font_height = sprite_size.x;
+			font_width = sprite_size.y;
 		}
 
 		void TestDraw(olc::PixelGameEngine* pge, const olc::vi2d& pos) const
@@ -324,7 +331,8 @@ namespace olc
 	private:
 		std::string font_path = "";
 
-		int size = 12;
+		int font_size = 12;
+		olc::vi2d sprite_size{ 16, 16 };
 
 		FT_Library library = nullptr;
 		FT_Face face = nullptr;
