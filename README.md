@@ -3,11 +3,23 @@
 This repository contains a few extensions that may be of use to developers using
 OneLoneCoder's PixelGameEngine (https://github.com/OneLoneCoder/olcPixelGameEngine).
 
-In this initial release, the code is not in a particularly friendly, optimized,
+In this early release, the code is not in a particularly friendly, optimized,
 or possibly even correct state. However, you are free to do what you will with it
 or use it to figure out how to implement better fonts in your own application.
 
 <img src="example/basic_example.jpg" width="512" />
+
+# Features
+
+* Support for TTF and OTF fonts
+* Unicode (wchar_t) support (append `W` to the end of the function names)
+
+<img src="example/unicode_support.jpg" width="512" />
+
+* Compute bounding box of a string
+* olc::bbox templated struct (a quad of x, y, h, w)
+
+<img src="example/bounding_box.jpg" width="512" />
 
 # Requirements
 
@@ -21,15 +33,12 @@ compatibilty right now.
 
 Among the planned changes are:
 
-* Currently the font library uses my spritemap library as well. Ideally I'd like
-to remove that dependency.
-* The spritemap will generate the first 256 glyphs from the font and for
-simplicity sake is just in one giant long image. This enables trivial offsets
-into the spritemap as `character * sprite_size.x` but may not be the most
-friendly of layouts for other projects. It would be nice to be able to specify
-a stride for the resulting spritemap.
-* There are other partially implemented classes including MonospaceFont which
-behaves much like the default OLC font.
+* Dynamic glyph loading -- load and cache glyphs the first time they are seen
+rather than at startup.
+* Better code reuse and maintenace between `char` and `wchar_t` types.
+* Linux/OSX support
+* Rotation
+* Optimizations for both memory & computation
 
 # Contributing
 
