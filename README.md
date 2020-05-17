@@ -26,6 +26,23 @@ or use it to figure out how to implement better fonts in your own application.
 The font extension uses FreeType 2 to read and process TTF fonts. More information
 can be found here: https://www.freetype.org/index.html
 
+# Usage
+
+```cpp
+auto font = new olc::TTFFont("./Roboto-Medium.ttf", i);
+font->BuildSprite();
+
+font->DrawString(this, { 16, 16 }, "Hello World");
+```
+
+Note that initializing the font should be done in `OnUserCreate` and drawing
+of the string should be done in `OnUserUpdate`. In addition, the x, y coordinates
+are that of the origin, or baseline of the string, not the upper left corner.
+
+See the glyph metrics discussion for FreeType here:
+
+https://www.freetype.org/freetype2/docs/tutorial/step2.html
+
 # Changes Coming
 
 This library is in a volatile state and will change. Do not expect backwards

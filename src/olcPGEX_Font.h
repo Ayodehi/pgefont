@@ -166,7 +166,7 @@ namespace olc
 			}
 		}
 
-		void DrawVerticalString(olc::PixelGameEngine* pge, const olc::vi2d& pos, std::string_view message, const olc::vf2d& scale = { 1.0f, 1.0f }, const olc::Pixel& tint = olc::WHITE) const
+		void DrawVerticalString(olc::PixelGameEngine* pge, const olc::vi2d& origin, std::string_view message, const olc::vf2d& scale = { 1.0f, 1.0f }, const olc::Pixel& tint = olc::WHITE) const
 		{
 			olc::vf2d spos = { 0.0f, 0.0f };
 			for (auto c : message)
@@ -179,7 +179,7 @@ namespace olc
 				else
 				{
 					pge->DrawPartialDecal(
-						{ pos.x + spos.x + fontDetails[c].verticalBearingX, pos.y + spos.y - fontDetails[c].verticalBearingY },
+						{ origin.x + spos.x + fontDetails[c].verticalBearingX, origin.y + spos.y - fontDetails[c].verticalBearingY },
 						decals[fontDetails[c].spritemapIndex],
 						{ (float)fontDetails[c].spritemapOffsetX, (float)fontDetails[c].spritemapOffsetY },
 						{ (float)fontDetails[c].width, (float)fontDetails[c].height },
@@ -192,7 +192,7 @@ namespace olc
 			}
 		}
 
-		void DrawVerticalStringW(olc::PixelGameEngine* pge, const olc::vi2d& pos, std::wstring_view message, const olc::vf2d& scale = { 1.0f, 1.0f }, const olc::Pixel& tint = olc::WHITE) const
+		void DrawVerticalStringW(olc::PixelGameEngine* pge, const olc::vi2d& origin, std::wstring_view message, const olc::vf2d& scale = { 1.0f, 1.0f }, const olc::Pixel& tint = olc::WHITE) const
 		{
 			olc::vf2d spos = { 0.0f, 0.0f };
 			for (auto c : message)
@@ -205,7 +205,7 @@ namespace olc
 				else
 				{
 					pge->DrawPartialDecal(
-						{ pos.x + spos.x + fontDetails[c].verticalBearingX, pos.y + spos.y - fontDetails[c].verticalBearingY },
+						{ origin.x + spos.x + fontDetails[c].verticalBearingX, origin.y + spos.y - fontDetails[c].verticalBearingY },
 						decals[fontDetails[c].spritemapIndex],
 						{ (float)fontDetails[c].spritemapOffsetX, (float)fontDetails[c].spritemapOffsetY },
 						{ (float)fontDetails[c].width, (float)fontDetails[c].height },
@@ -218,7 +218,7 @@ namespace olc
 			}
 		}
 
-		void DrawFormatStringW(olc::PixelGameEngine* pge, const olc::vi2d& pos, const olc::vf2d& scale = { 1.0f, 1.0f }, const olc::Pixel& tint = olc::WHITE, const std::wstring message = L"", ...) const
+		void DrawFormatStringW(olc::PixelGameEngine* pge, const olc::vi2d& origin, const olc::vf2d& scale = { 1.0f, 1.0f }, const olc::Pixel& tint = olc::WHITE, const std::wstring message = L"", ...) const
 		{
 			wchar_t buffer[2048];
 			va_list args;
@@ -226,10 +226,10 @@ namespace olc
 			vswprintf_s(buffer, 2048, message.c_str(), args);
 			va_end(args);
 
-			DrawStringW(pge, pos, std::wstring_view(buffer), scale, tint);
+			DrawStringW(pge, origin, std::wstring_view(buffer), scale, tint);
 		}
 
-		void DrawFormatString(olc::PixelGameEngine* pge, const olc::vi2d& pos, const olc::vf2d& scale = { 1.0f, 1.0f }, const olc::Pixel& tint = olc::WHITE, const std::string message = "", ...) const
+		void DrawFormatString(olc::PixelGameEngine* pge, const olc::vi2d& origin, const olc::vf2d& scale = { 1.0f, 1.0f }, const olc::Pixel& tint = olc::WHITE, const std::string message = "", ...) const
 		{
 			char buffer[2048];
 			va_list args;
@@ -237,10 +237,10 @@ namespace olc
 			vsprintf_s(buffer, 2048, message.c_str(), args);
 			va_end(args);
 
-			DrawString(pge, pos, std::string_view(buffer), scale, tint);
+			DrawString(pge, origin, std::string_view(buffer), scale, tint);
 		}
 
-		void DrawVerticalFormatStringW(olc::PixelGameEngine* pge, const olc::vi2d& pos, const olc::vf2d& scale = { 1.0f, 1.0f }, const olc::Pixel& tint = olc::WHITE, const std::wstring message = L"", ...) const
+		void DrawVerticalFormatStringW(olc::PixelGameEngine* pge, const olc::vi2d& origin, const olc::vf2d& scale = { 1.0f, 1.0f }, const olc::Pixel& tint = olc::WHITE, const std::wstring message = L"", ...) const
 		{
 			wchar_t buffer[2048];
 			va_list args;
@@ -248,10 +248,10 @@ namespace olc
 			vswprintf_s(buffer, 2048, message.c_str(), args);
 			va_end(args);
 
-			DrawVerticalStringW(pge, pos, std::wstring_view(buffer), scale, tint);
+			DrawVerticalStringW(pge, origin, std::wstring_view(buffer), scale, tint);
 		}
 
-		void DrawVerticalFormatString(olc::PixelGameEngine* pge, const olc::vi2d& pos, const olc::vf2d& scale = { 1.0f, 1.0f }, const olc::Pixel& tint = olc::WHITE, const std::string message = "", ...) const
+		void DrawVerticalFormatString(olc::PixelGameEngine* pge, const olc::vi2d& origin, const olc::vf2d& scale = { 1.0f, 1.0f }, const olc::Pixel& tint = olc::WHITE, const std::string message = "", ...) const
 		{
 			char buffer[2048];
 			va_list args;
@@ -259,10 +259,10 @@ namespace olc
 			vsprintf_s(buffer, 2048, message.c_str(), args);
 			va_end(args);
 
-			DrawVerticalString(pge, pos, std::string_view(buffer), scale, tint);
+			DrawVerticalString(pge, origin, std::string_view(buffer), scale, tint);
 		}
 
-		void DrawVerticalFormatStringW(olc::PixelGameEngine* pge, const olc::vi2d& pos, const std::wstring message = L"", ...) const
+		void DrawVerticalFormatStringW(olc::PixelGameEngine* pge, const olc::vi2d& origin, const std::wstring message = L"", ...) const
 		{
 			wchar_t buffer[2048];
 			va_list args;
@@ -270,10 +270,10 @@ namespace olc
 			vswprintf_s(buffer, 2048, message.c_str(), args);
 			va_end(args);
 
-			DrawVerticalStringW(pge, pos, std::wstring_view(buffer), { 1.0f, 1.0f }, olc::WHITE);
+			DrawVerticalStringW(pge, origin, std::wstring_view(buffer), { 1.0f, 1.0f }, olc::WHITE);
 		}
 
-		void DrawVerticalFormatString(olc::PixelGameEngine* pge, const olc::vi2d& pos, const std::string message = "", ...) const
+		void DrawVerticalFormatString(olc::PixelGameEngine* pge, const olc::vi2d& origin, const std::string message = "", ...) const
 		{
 			char buffer[2048];
 			va_list args;
@@ -281,10 +281,10 @@ namespace olc
 			vsprintf_s(buffer, 2048, message.c_str(), args);
 			va_end(args);
 
-			DrawVerticalString(pge, pos, std::string_view(buffer), { 1.0f, 1.0f }, olc::WHITE);
+			DrawVerticalString(pge, origin, std::string_view(buffer), { 1.0f, 1.0f }, olc::WHITE);
 		}
 
-		void DrawFormatStringW(olc::PixelGameEngine* pge, const olc::vi2d& pos, const std::wstring message = L"", ...) const
+		void DrawFormatStringW(olc::PixelGameEngine* pge, const olc::vi2d& origin, const std::wstring message = L"", ...) const
 		{
 			wchar_t buffer[2048];
 			va_list args;
@@ -292,10 +292,10 @@ namespace olc
 			vswprintf_s(buffer, 2048, message.c_str(), args);
 			va_end(args);
 
-			DrawStringW(pge, pos, std::wstring_view(buffer));
+			DrawStringW(pge, origin, std::wstring_view(buffer));
 		}
 
-		void DrawFormatString(olc::PixelGameEngine* pge, const olc::vi2d& pos, const std::string message = "", ...) const
+		void DrawFormatString(olc::PixelGameEngine* pge, const olc::vi2d& origin, const std::string message = "", ...) const
 		{
 			char buffer[2048];
 			va_list args;
@@ -303,7 +303,7 @@ namespace olc
 			vsprintf_s(buffer, 2048, message.c_str(), args);
 			va_end(args);
 
-			DrawString(pge, pos, std::string_view(buffer));
+			DrawString(pge, origin, std::string_view(buffer));
 		}
 
 		olc::bbox<int> MeasureStringW(std::wstring_view message)
